@@ -67,9 +67,23 @@ export default {
       this.simplemde.codemirror.on('change', () => {
         this.$emit('input', this.simplemde.value())
       })
-      this.simplemde.codemirror.on('drop', function (editor, e) {
+      this.simplemde.codemirror.on('drop', (editor, event) => {
         // 拖拽
-        console.log(event)
+        // console.log(event)
+        event.preventDefault()
+        var data = event.dataTransfer
+        // console.log(data.files)
+        var len = data.files.length
+        for (var i = 0; i < len; i++) {
+          var file = data.files[i]
+          var reader = new FileReader()
+          var _this = this
+          reader.readAsDataURL(file)
+          reader.onload = function (e) {
+            let base64Str = e.target.result
+            _this.uploadImgFromPaste(base64Str, 'drop', true)
+          }
+        }
       })
       // console.log(this)
       this.simplemde.codemirror.on('paste', (editor, event) => {
@@ -138,7 +152,7 @@ export default {
               // img.className = 'my_img'
               // img.src = data.store_path
               // tarBox.appendChild(img)
-              console.log(xhr)
+              // console.log(xhr)
             }
           } else {
             console.log(xhr)
