@@ -6,9 +6,11 @@
         <!-- 侧边导航 -->
         <nav class="aside-nav">
           <ul class="aside-nav-list">
-            <li class="aside-nav-item"><a href="#/" class="aside-nav-button active"><i class="fa fa-home fa-fw iconfont"></i></a> </li>
-            <li class="aside-nav-item"><a href="#/tag" class="aside-nav-button"><i class="fa fa-tags fa-fw iconfont"></i></a> </li>
-            <li class="aside-nav-item"><a href="#/about" class="aside-nav-button"><i class="fa fa-user fa-fw iconfont"></i></a> </li>
+            <li v-for="(item, index) in items" class="aside-nav-item">
+              <a :href="item.url" :class="[commonClass,item.active ? activeClass : '']"  v-on:click="navClickEvent(items, index)">
+                <i class="fa fa-fw iconfont" :class="[item.icon]"></i>
+              </a>
+            </li>
           </ul>
         </nav>
         <!-- 侧边导航end -->
@@ -30,7 +32,33 @@ export default {
   name: 'app',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      commonClass: 'aside-nav-button',
+      activeClass: 'active',
+      items: [
+        {
+          url: '#/',
+          icon: 'fa-home',
+          active: true
+        },
+        {
+          url: '#/tag',
+          icon: 'fa-tags',
+          active: false
+        },
+        {
+          url: '#/about',
+          icon: 'fa-user',
+          active: false
+        }
+      ]
+    }
+  },
+  methods: {
+    navClickEvent: function (items, index) {
+      items.forEach(function (el) {
+        el.active = false
+      })
+      items[index].active = true
     }
   }
 }
