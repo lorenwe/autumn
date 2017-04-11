@@ -6,44 +6,60 @@
         <!-- 侧边导航 -->
         <nav class="aside-nav">
           <ul class="aside-nav-list">
-            <li class="aside-nav-item"><a class="aside-nav-button active" href=""><i class="fa fa-home fa-fw iconfont"></i></a>  </li>
-            <li class="aside-nav-item"><a class="aside-nav-button" href=""><i class="fa fa-tags fa-fw iconfont"></i></a> </li>
-            <li class="aside-nav-item"><a class="aside-nav-button" href=""><i class="fa fa-user fa-fw iconfont"></i></a> </li>
+            <li v-for="(item, index) in items" class="aside-nav-item">
+              <a :href="item.url" :class="[commonClass,item.active ? activeClass : '']"  v-on:click="navClickEvent(items, index)">
+                <i class="fa fa-fw iconfont" :class="[item.icon]"></i>
+              </a>
+            </li>
           </ul>
         </nav>
         <!-- 侧边导航end -->
         <!-- 登出 -->
         <nav class="aside-menu">
           <ul class="aside-nav-list">
-            <li class="aside-nav-item"><a class="aside-nav-button"><i class="fa fa-sign-out fa-fw fa-rotate-180 iconfont"></i> </a></li>
+            <li class="aside-nav-item"><a href="#/out" class="aside-nav-button"><i class="fa fa-sign-out fa-fw fa-rotate-180 iconfont"></i> </a></li>
           </ul>
         </nav>
         <!-- 登出end -->
       </aside>
-      <!-- 文章列表 -->
-      <post-list></post-list>
-      <!-- 文章列表end -->
-      <!-- 编辑器 -->
-      <editor></editor>
-      <!-- 编辑器end -->
+      <router-view></router-view>
     </div>
   </div>
 </template>
 
 <script>
-import PostList from './components/PostList'
-import Editor from './components/Editor'
-
 export default {
   name: 'app',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      commonClass: 'aside-nav-button',
+      activeClass: 'active',
+      items: [
+        {
+          url: '#/',
+          icon: 'fa-home',
+          active: true
+        },
+        {
+          url: '#/tag',
+          icon: 'fa-tags',
+          active: false
+        },
+        {
+          url: '#/about',
+          icon: 'fa-user',
+          active: false
+        }
+      ]
     }
   },
-  components: {
-    'post-list': PostList,
-    'editor': Editor
+  methods: {
+    navClickEvent: function (items, index) {
+      items.forEach(function (el) {
+        el.active = false
+      })
+      items[index].active = true
+    }
   }
 }
 </script>
@@ -158,5 +174,8 @@ export default {
       width: 100%;
       left: 0;
       bottom: 0;
+  }
+  .content {
+      height: 100%;
   }
 </style>

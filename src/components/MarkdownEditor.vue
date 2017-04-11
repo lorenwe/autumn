@@ -67,18 +67,48 @@ export default {
       this.simplemde.codemirror.on('change', () => {
         this.$emit('input', this.simplemde.value())
       })
-      this.simplemde.codemirror.on('drop', function (editor, e) {
+      this.simplemde.codemirror.on('drop', (editor, event) => {
         // 拖拽
-        console.log(event)
+        // console.log(event)
+        event.preventDefault()
+        var data = event.dataTransfer
+        // console.log(data.files)
+        var len = data.files.length
+        for (var i = 0; i < len; i++) {
+          var file = data.files[i]
+          // this.simplemde.value(_this.value + '\n![](' + base64Str + ')')
+          this.uploadImgFromPaste(file)
+        }
       })
-      // console.log(this)
       this.simplemde.codemirror.on('paste', (editor, event) => {
         // 粘帖
         if (event.clipboardData || event.originalEvent) {
           var clipboardData = (event.clipboardData || event.originalEvent.clipboardData)
           if (clipboardData.items) {
             // for chrome
-            this.fileChrom(event, clipboardData)
+            // this.fileChrom(event, clipboardData)
+            for (var i = 0; i < clipboardData.items.length; i++) {
+              var item = clipboardData.items[i]
+              console.log(item.kind)
+              if (item.kind === 'file') {
+                // 文件内容
+                if (item.type.indexOf('image') !== -1) {
+                  // 只处理图片内容
+                  var blob = item.getAsFile()
+                  var maxsize = 20 * 1024 * 1024
+                  var size = blob.size
+                  if (size === 0 || size > maxsize) {
+                    return
+                  }
+                  event.preventDefault()
+                  console.log(blob.size)
+                  // 文件上传
+                  this.uploadImgFromPaste(blob)
+                }
+              } else if (item.kind === 'string') {
+                // 文本内容 不做处理
+              }
+            }
           } else {
             // for firefox
           }
@@ -99,47 +129,15 @@ export default {
         this.value = this.simplemde.value()
       })
     },
-    fileChrom (event, clipboardData) {
-      var items = clipboardData.items
-      var len = items.length
-      var blob = null
-      event.preventDefault()
-      for (var i = 0; i < len; i++) {
-        if (items[i].type.indexOf('image') !== -1) {
-          blob = items[i].getAsFile()
-          // console.log(blob)
-        }
-      }
-      if (blob !== null) {
-        var reader = new FileReader()
-        var _this = this
-        reader.onload = function (event) {
-          let base64Str = event.target.result
-          // console.log(_this)
-          _this.uploadImgFromPaste(base64Str, 'paste', true)
-        }
-        reader.readAsDataURL(blob)
-      }
-    },
-    uploadImgFromPaste (file, type, isChrome) {
+    uploadImgFromPaste (file) {
       var formData = new FormData()
       formData.append('image', file)
-      formData.append('submission-type', type)
       var xhr = new XMLHttpRequest()
       xhr.open('POST', '/upload_image')
       xhr.onload = function () {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
             console.log(xhr)
-            // var data = JSON.parse(xhr.responseText)
-            // var tarBox = document.getElementById('tar_box')
-            if (isChrome) {
-              // var img = document.createElement('img')
-              // img.className = 'my_img'
-              // img.src = data.store_path
-              // tarBox.appendChild(img)
-              console.log(xhr)
-            }
           } else {
             console.log(xhr)
           }
