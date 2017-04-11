@@ -9,9 +9,14 @@
 import MarkdownEditor from './MarkdownEditor'
 
 export default {
+  props: {
+    content: {
+      default: 'SimpleMDE'
+    }
+  },
   data () {
     return {
-      content: '``` \n var a=1; \n```',
+      // content: '``` \n var a=1; \n```',
       configs: {
         spellChecker: false, // 禁用拼写检查
         autoDownloadFontAwesome: false, // 阻止下载Font Awesome

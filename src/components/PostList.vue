@@ -2,15 +2,10 @@
   <section class="post-list-column">
     <h3 class="page-title"><i class="fa fa-home fa-fw iconfont"></i> 文章列表  <i class="fa fa-plus fa-fw iconfont post-add"></i></h3>
     <ul class="post-list reset-list">
-      <li class="post-list-item active" v-for="post in postList">
+      <li v-for="(post, index) in postList" :class="[commonClass, index===focus ? activeClass : '']" v-on:click="postClickEvent(index)">
         <i class="fa fa-file-text fa-2x icon-note"></i>
         <p class="abbreviate">{{post['excerpt']}}</p>
         <a href="javascript:void(0)" data-type="edit" class="note-link title">{{post['title']}}</a>
-      </li>
-      <li class="post-list-item">
-        <i class="fa fa-file-text fa-2x icon-note"></i>
-        <p class="abbreviate">2365.26233都是就自动保存功能，书写的文章只有在发布之后才会</p>
-        <a href="javascript:void(0)" data-type="edit" class="note-link title">02313</a>
       </li>
     </ul>
   </section>
@@ -20,9 +15,23 @@
 export default {
   data () {
     return {
+      commonClass: 'post-list-item',
+      focus: 0,
+      activeClass: 'active',
       postList: [
-        {id: 1, title: '标题', article: 'article', excerpt: 'excerpt', lastEditTime: '2017-03-30'}
+        {id: 1, title: '标题', article: 'article', excerpt: 'excerpt222222', lastEditTime: '2017-03-30'},
+        {id: 1, title: '标题', article: 'article', excerpt: 'excerpteeeeeeee', lastEditTime: '2017-03-30'},
+        {id: 2, title: '02313', article: 'article', excerpt: '只有在发布之后才会', lastEditTime: '2017-03-30'}
       ]
+    }
+  },
+  ready () {
+    this.postClickEvent(0)
+  },
+  methods: {
+    postClickEvent: function (index) {
+      this.focus = index
+      this.$emit('postClick', this.postList[index].excerpt)
     }
   }
 }
