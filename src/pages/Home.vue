@@ -1,10 +1,10 @@
 <template>
   <div id="home" class="content">
     <!-- 文章列表 -->
-    <post-list></post-list>
+    <post-list v-on:postClick="postListEvent"></post-list>
     <!-- 文章列表end -->
     <!-- 编辑器 -->
-    <editor></editor>
+    <editor :content="content"></editor>
     <!-- 编辑器end -->
   </div>
 </template>
@@ -17,12 +17,18 @@
     name: 'home',
     data () {
       return {
-        msg: 'Welcome to Your Vue.js App'
+        content: ''
       }
     },
     components: {
       'post-list': PostList,
       'editor': Editor
+    },
+    methods: {
+      postListEvent: function (date) {
+        console.log(date)
+        this.content = date
+      }
     }
   }
 </script>
