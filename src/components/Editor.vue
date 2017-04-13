@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import MarkdownEditor from './MarkdownEditor'
+import MarkdownEditor from './MarkdownEditor2'
 
 export default {
   props: {
