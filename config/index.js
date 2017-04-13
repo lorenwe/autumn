@@ -29,7 +29,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
         '/upload_image': {
-            target: 'http://192.168.1.16:1089',
+            target: 'http://localhost/upload_img.php',
             changeOrigin: true
         }
     },
