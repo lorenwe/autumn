@@ -1,5 +1,6 @@
 <template>
   <div style="height:100%" id="app">
+    <vprogress></vprogress>
     <div class="container-with-aside fade-transition">
       <aside class="sidebar">
         <img class="sidebar-logo" src="./assets/logo2.png" alt="logo">
@@ -30,6 +31,8 @@
 </template>
 
 <script>
+import VProgress from './components/VProgress'
+
 export default {
   name: 'app',
   data () {
@@ -54,6 +57,9 @@ export default {
         }
       ]
     }
+  },
+  components: {
+    'vprogress': VProgress
   },
   mounted () {
   },
