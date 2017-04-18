@@ -34,6 +34,7 @@ export default {
   },
   methods: {
     initialize () {
+      // console.log(this)
       let configs = {}
       Object.assign(configs, this.configs)
       configs.element = configs.element || this.$el.firstElementChild

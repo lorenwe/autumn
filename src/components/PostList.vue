@@ -18,20 +18,57 @@ export default {
       commonClass: 'post-list-item',
       focus: 0,
       activeClass: 'active',
-      postList: [
-        {id: 1, title: '标题', article: 'article', excerpt: 'excerpt222222', lastEditTime: '2017-03-30'},
-        {id: 1, title: '标题', article: 'article', excerpt: 'excerpteeeeeeee', lastEditTime: '2017-03-30'},
-        {id: 2, title: '02313', article: 'article', excerpt: '只有在发布之后才会', lastEditTime: '2017-03-30'}
-      ]
+      postList: []
     }
   },
-  ready () {
-    this.postClickEvent(0)
+  beforeCreate: function () {
+
   },
+  // 组件实例化之前
+  created: function () {
+
+  },
+  // 组件实例化了
+  beforeMount: function () {
+
+  },
+  // 组件写入dom结构之前
+  mounted: function () {
+    this.getPostList()
+  },
+  // 组件写入dom结构了
+  beforeUpdate: function () {
+
+  },
+  // 组件更新前
+  updated: function () {
+
+  },
+  // 组件更新比如修改了文案
+  beforeDestroy: function () {
+
+  },
+  // 组件销毁之前
+  destroyed: function () {
+
+  },
+  // 组件已经销毁
   methods: {
     postClickEvent: function (index) {
       this.focus = index
       this.$emit('postClick', this.postList[index].excerpt)
+    },
+    getPostList: function () {
+      var _this = this
+      this.$ajax.post('/postList.php').then(function (response) {
+        var result = response.data
+        if (result.State) {
+          _this.postList = result.Data
+          _this.$emit('postClick', _this.postList[0].excerpt)
+        }
+      }).catch(function (err) {
+        console.log(err)
+      })
     }
   }
 }

@@ -26,7 +26,6 @@
     },
     methods: {
       postListEvent: function (date) {
-        console.log(date)
         this.content = date
       }
     }
@@ -34,5 +33,7 @@
 </script>
 
 <style scoped>
-  
+  .content {
+    height: 100%;
+  }
 </style>

@@ -22,7 +22,9 @@
         </nav>
         <!-- 登出end -->
       </aside>
-      <router-view></router-view>
+      <transition name="fade">
+        <router-view></router-view>
+      </transition>
     </div>
   </div>
 </template>
@@ -52,6 +54,10 @@ export default {
         }
       ]
     }
+  },
+  mounted () {
+  },
+  created () {
   },
   methods: {
     navClickEvent: function (items, index) {
@@ -175,7 +181,10 @@ export default {
       left: 0;
       bottom: 0;
   }
-  .content {
-      height: 100%;
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0
   }
 </style>
