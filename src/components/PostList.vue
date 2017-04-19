@@ -96,6 +96,7 @@ export default {
       color: #7f8c8d;
       padding-left: 25px;
       font-weight: 400;
+      margin: 18px 0;
   }
   
   .post-add {

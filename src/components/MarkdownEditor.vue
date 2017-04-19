@@ -203,7 +203,7 @@ export default {
 
 <style>
 .markdown-editor {
-  height: 100%;
+  height: calc(100% - 70px);
   position: relative;
 }
 .markdown-editor .markdown-body {
