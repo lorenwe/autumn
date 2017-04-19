@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "axios": "^0.16.1",
-    "nprogress": "^0.2.0",
     "simplemde": "^1.11.2",
     "vue": "^2.2.2",
     "vue-progressbar": "^0.7.1",
