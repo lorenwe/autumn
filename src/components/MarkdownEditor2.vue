@@ -16,6 +16,7 @@ export default {
   name: 'markdown-editor',
   data () {
     return {
+      content: '',
       loadText: '',
       loadOver: true
     }
@@ -38,7 +39,7 @@ export default {
   },
   ready () {
     this.initialize()
-    this.syncValue()
+    // this.syncValue()
   },
   mounted () {
     this.initialize()
@@ -75,8 +76,17 @@ export default {
       this.bindingEvents()
     },
     bindingEvents () {
+      // this.simplemde.codemirror.on('change', () => {
+      //   this.$emit('input', this.simplemde.value())
+      // })
       this.simplemde.codemirror.on('change', () => {
-        this.$emit('input', this.simplemde.value())
+        this.content = this.simplemde.value()
+      })
+      this.simplemde.codemirror.on('keydown', (editor, event) => {
+        if (event.ctrlKey === true && event.keyCode === 83) {
+          this.postContent(this.content)
+          event.preventDefault()
+        }
       })
       this.simplemde.codemirror.on('drop', (editor, event) => {
         // 拖拽
@@ -135,11 +145,13 @@ export default {
       preview.className = `editor-preview ${className}`
       wrapper.appendChild(preview)
     },
-    syncValue () {
-      this.simplemde.codemirror.on('change', () => {
-        this.value = this.simplemde.value()
-      })
-    },
+    // syncValue () {
+    //   this.simplemde.codemirror.on('change', () => {
+    //     this.content = this.simplemde.value()
+    //     console.log(this.simplemde.value())
+    //     console.log(this.content)
+    //   })
+    // },
     uploadImgFromPaste (file) {
       var _this = this
       var formData = new FormData()
@@ -148,7 +160,7 @@ export default {
       xhr.upload.addEventListener('progress', function (e) {
         _this.onProgress(e.loaded, e.total)
       }, false)
-      xhr.open('POST', '/upload_image')
+      xhr.open('POST', '/upload_image.php')
       xhr.onload = function () {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
@@ -168,6 +180,9 @@ export default {
         console.log(xhr)
       }
       xhr.send(formData)
+    },
+    postContent (content) {
+      console.log(content)
     },
     onProgress (loaded, total) {
       this.loadOver = false
