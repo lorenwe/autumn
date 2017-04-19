@@ -1,6 +1,6 @@
 <template>
   <div style="height:100%" id="app">
-    <vprogress></vprogress>
+    <vue-progress-bar></vue-progress-bar>
     <div class="container-with-aside fade-transition">
       <aside class="sidebar">
         <img class="sidebar-logo" src="./assets/logo2.png" alt="logo">
@@ -31,7 +31,6 @@
 </template>
 
 <script>
-import VProgress from './components/VProgress'
 
 export default {
   name: 'app',
@@ -58,12 +57,23 @@ export default {
       ]
     }
   },
-  components: {
-    'vprogress': VProgress
-  },
   mounted () {
+    this.$Progress.finish()
   },
   created () {
+    // 路由绑定钩子事件，切换路由出现进度条
+    this.$Progress.start()
+    this.$router.beforeEach((to, from, next) => {
+      if (to.meta.progress !== undefined) {
+        let meta = to.meta.progress
+        this.$Progress.parseMeta(meta)
+      }
+      this.$Progress.start()
+      next()
+    })
+    this.$router.afterEach((to, from) => {
+      this.$Progress.finish()
+    })
   },
   methods: {
     navClickEvent: function (items, index) {
