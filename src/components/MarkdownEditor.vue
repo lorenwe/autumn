@@ -1,6 +1,11 @@
 <template>
   <div class="markdown-editor">
     <textarea></textarea>
+    <div class="wrapper" v-show="!loadOver"> 
+      <div class="load-bar" > 
+        <div class="load-bar-inner" :style="{width: loadText }"> <span>{{loadText}}</span> </div> 
+      </div> 
+    </div> 
   </div>
 </template>
 
@@ -9,6 +14,13 @@ import SimpleMDE from 'simplemde'
 
 export default {
   name: 'markdown-editor',
+  data () {
+    return {
+      content: '',
+      loadText: '',
+      loadOver: true
+    }
+  },
   props: {
     value: String,
     previewClass: String,
@@ -27,7 +39,7 @@ export default {
   },
   ready () {
     this.initialize()
-    this.syncValue()
+    // this.syncValue()
   },
   mounted () {
     this.initialize()
@@ -64,8 +76,17 @@ export default {
       this.bindingEvents()
     },
     bindingEvents () {
+      // this.simplemde.codemirror.on('change', () => {
+      //   this.$emit('input', this.simplemde.value())
+      // })
       this.simplemde.codemirror.on('change', () => {
-        this.$emit('input', this.simplemde.value())
+        this.content = this.simplemde.value()
+      })
+      this.simplemde.codemirror.on('keydown', (editor, event) => {
+        if (event.ctrlKey === true && event.keyCode === 83) {
+          this.postContent(this.content)
+          event.preventDefault()
+        }
       })
       this.simplemde.codemirror.on('drop', (editor, event) => {
         // 拖拽
@@ -124,22 +145,34 @@ export default {
       preview.className = `editor-preview ${className}`
       wrapper.appendChild(preview)
     },
-    syncValue () {
-      this.simplemde.codemirror.on('change', () => {
-        this.value = this.simplemde.value()
-      })
-    },
+    // syncValue () {
+    //   this.simplemde.codemirror.on('change', () => {
+    //     this.content = this.simplemde.value()
+    //     console.log(this.simplemde.value())
+    //     console.log(this.content)
+    //   })
+    // },
     uploadImgFromPaste (file) {
+      var _this = this
       var formData = new FormData()
       formData.append('image', file)
       var xhr = new XMLHttpRequest()
-      xhr.open('POST', '/upload_image')
+      xhr.upload.addEventListener('progress', function (e) {
+        _this.onProgress(e.loaded, e.total)
+      }, false)
+      xhr.open('POST', '/upload_image.php')
       xhr.onload = function () {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
+            setTimeout(function () {
+              _this.loadOver = true
+            }, 400)
             console.log(xhr)
           } else {
             console.log(xhr)
+            setTimeout(function () {
+              _this.loadOver = true
+            }, 400)
           }
         }
       }
@@ -147,6 +180,13 @@ export default {
         console.log(xhr)
       }
       xhr.send(formData)
+    },
+    postContent (content) {
+      console.log(content)
+    },
+    onProgress (loaded, total) {
+      this.loadOver = false
+      this.loadText = (loaded / total * 100).toFixed(2) + '%'
     }
   },
   destroyed () {
@@ -191,4 +231,86 @@ export default {
     bottom: 0;
     box-sizing: border-box;
 }
+
+/*进度条样式*/
+.wrapper {  
+    width: 350px;  
+    margin: 200px auto;  
+}  
+.wrapper p a {color:#757575; text-decoration:none;}  
+.wrapper .load-bar {  
+    width: 100%;  
+    height: 25px;  
+    border-radius: 30px;  
+    background: #dcdbd7;  
+    position: relative;  
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8),  inset 0 2px 3px rgba(0, 0, 0, 0.2);  
+    z-index: 11;
+}  
+.wrapper .load-bar:hover .load-bar-inner, .wrapper .load-bar:hover #counter {  
+    animation-play-state: paused;  
+    -moz-animation-play-state: paused;  
+    -o-animation-play-state: paused;  
+    -webkit-animation-play-state: paused;  
+}  
+.wrapper .load-bar-inner {  
+    height: 99%;  
+    width: 0%;  
+    border-radius: inherit;  
+    position: relative;  
+    background: #c2d7ac;  
+    background: linear-gradient(#e0f6c8, #98ad84);  
+    background: -moz-linear-gradient(#e0f6c8, #98ad84);  
+    background: -webkit-linear-gradient(#e0f6c8, #98ad84);  
+    background: -o-linear-gradient(#e0f6c8, #98ad84);  
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1),  0 1px 5px rgba(0, 0, 0, 0.3),  0 4px 5px rgba(0, 0, 0, 0.3);  
+    animation: loader 10s linear infinite;  
+    -moz-animation: loader 10s linear infinite;  
+    -webkit-animation: loader 10s linear infinite;  
+    -o-animation: loader 10s linear infinite;  
+}  
+.wrapper #counter {  
+    position: absolute;  
+    background: #eeeff3;  
+    background: linear-gradient(#eeeff3, #cbcbd3);  
+    background: -moz-linear-gradient(#eeeff3, #cbcbd3);  
+    background: -webkit-linear-gradient(#eeeff3, #cbcbd3);  
+    background: -o-linear-gradient(#eeeff3, #cbcbd3);  
+    padding: 5px 10px;  
+    border-radius: 0.4em;  
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1),  0 2px 4px 1px rgba(0, 0, 0, 0.2),  0 1px 3px 1px rgba(0, 0, 0, 0.1);  
+    left: -25px;  
+    top: -50px;  
+    font-size: 12px;  
+    font-weight: bold;  
+    width: 44px;  
+    animation: counter 10s linear infinite;  
+    -moz-animation: counter 10s linear infinite;  
+    -webkit-animation: counter 10s linear infinite;  
+    -o-animation: counter 10s linear infinite;  
+}  
+.wrapper #counter:after {  
+    content: "";  
+    position: absolute;  
+    width: 8px;  
+    height: 8px;  
+    background: #cbcbd3;  
+    transform: rotate(45deg);  
+    -moz-transform: rotate(45deg);  
+    -webkit-transform: rotate(45deg);  
+    -o-transform: rotate(45deg);  
+    left: 50%;  
+    margin-left: -4px;  
+    bottom: -4px;  
+    box-shadow:  3px 3px 4px rgba(0, 0, 0, 0.2),  1px 1px 1px 1px rgba(0, 0, 0, 0.1);  
+    border-radius: 0 0 3px 0;  
+}  
+.wrapper h1 {  
+    font-size: 28px;  
+    padding: 20px 0 8px 0;  
+}  
+.wrapper p {  
+    font-size: 13px;  
+}  
+
 </style>

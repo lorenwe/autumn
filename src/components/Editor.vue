@@ -1,7 +1,8 @@
 <template>
   <div class="post-edit">
+    <div class="post-title"></div>
     <!-- <markdown-editor v-model="content" ref="markdownEditor"></markdown-editor> -->
-    <markdown-editor v-model="content" :configs="configs"></markdown-editor>
+    <markdown-editor :value="content" :configs="configs"></markdown-editor>
   </div>
 </template>
 
@@ -36,7 +37,12 @@ export default {
 
 <style scoped>
   .post-edit {
-      overflow: auto;
-      height: 100%;
+    overflow: auto;
+    height: 100%;
+  }
+  .post-title {
+    width: 100%;
+    height: 70px;
+    background-color: #c4c4c4;
   }
 </style>
