@@ -4,7 +4,7 @@
     <post-list v-on:postClick="postListEvent"></post-list>
     <!-- 文章列表end -->
     <!-- 编辑器 -->
-    <editor :content="content"></editor>
+    <editor :postData="postData"></editor>
     <!-- 编辑器end -->
   </div>
 </template>
@@ -17,7 +17,7 @@
     name: 'home',
     data () {
       return {
-        content: ''
+        postData: {}
       }
     },
     components: {
@@ -26,7 +26,7 @@
     },
     methods: {
       postListEvent: function (date) {
-        this.content = date
+        this.postData = date
       }
     }
   }

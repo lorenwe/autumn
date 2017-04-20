@@ -1,10 +1,10 @@
 <template>
   <div class="post-edit">
     <div class="post-title">
-      <input class="input-title" type="text">
+      <input v-model="postData.title" class="input-title" type="text">
     </div>
     <!-- <markdown-editor v-model="content" ref="markdownEditor"></markdown-editor> -->
-    <markdown-editor :value="content" :configs="configs"></markdown-editor>
+    <markdown-editor v-on:input="postListInput" v-bind:value="postData.excerpt" v-bind:title="postData.title" :configs="configs"></markdown-editor>
   </div>
 </template>
 
@@ -13,13 +13,12 @@ import MarkdownEditor from './MarkdownEditor'
 
 export default {
   props: {
-    content: {
-      default: 'SimpleMDE'
-    }
+    postData: {}
   },
   data () {
     return {
-      // content: '``` \n var a=1; \n```',
+      title: '',
+      content: '',
       configs: {
         spellChecker: false, // 禁用拼写检查
         autoDownloadFontAwesome: false, // 阻止下载Font Awesome
@@ -33,6 +32,20 @@ export default {
   },
   components: {
     'markdown-editor': MarkdownEditor
+  },
+  methods: {
+    postListInput: function (data) {
+      this.postData.excerpt = data
+    }
+  },
+  watch: {
+    title: {
+      handler: function (val, oldval) {
+        console.log(val)
+        console.log(this.postData)
+      },
+      deep: true
+    }
   }
 }
 </script>

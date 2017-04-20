@@ -17,12 +17,14 @@ export default {
   data () {
     return {
       content: '',
+      timer: 0,
       loadText: '',
       loadOver: true
     }
   },
   props: {
     value: String,
+    title: String,
     previewClass: String,
     customTheme: {
       type: Boolean,
@@ -36,10 +38,6 @@ export default {
         return {}
       }
     }
-  },
-  ready () {
-    this.initialize()
-    // this.syncValue()
   },
   mounted () {
     this.initialize()
@@ -76,11 +74,20 @@ export default {
       this.bindingEvents()
     },
     bindingEvents () {
-      // this.simplemde.codemirror.on('change', () => {
-      //   this.$emit('input', this.simplemde.value())
-      // })
       this.simplemde.codemirror.on('change', () => {
         this.content = this.simplemde.value()
+        this.$emit('input', this.content)
+        if (this.timer === 0) {
+          this.timer = Date.parse(new Date()) / 1000
+        } else {
+          let JetLag = Date.parse(new Date()) / 1000 - this.timer
+          if (JetLag > 10) {
+            this.timer = Date.parse(new Date()) / 1000
+            console.log(this.value)
+            console.log(this.title)
+            console.log(JetLag)
+          }
+        }
       })
       this.simplemde.codemirror.on('keydown', (editor, event) => {
         if (event.ctrlKey === true && event.keyCode === 83) {
@@ -145,13 +152,6 @@ export default {
       preview.className = `editor-preview ${className}`
       wrapper.appendChild(preview)
     },
-    // syncValue () {
-    //   this.simplemde.codemirror.on('change', () => {
-    //     this.content = this.simplemde.value()
-    //     console.log(this.simplemde.value())
-    //     console.log(this.content)
-    //   })
-    // },
     uploadImgFromPaste (file) {
       var _this = this
       var formData = new FormData()
