@@ -56,7 +56,7 @@ export default {
   methods: {
     postClickEvent: function (index) {
       this.focus = index
-      this.$emit('postClick', this.postList[index].excerpt)
+      this.$emit('postClick', this.postList[index])
     },
     test: function () {
       this.$Progress.start()
@@ -74,7 +74,7 @@ export default {
         var result = response.data
         if (result.State) {
           _this.postList = result.Data
-          _this.$emit('postClick', _this.postList[0].excerpt)
+          _this.$emit('postClick', _this.postList[0])
         }
       }).catch(function (err) {
         console.log(err)
@@ -96,6 +96,7 @@ export default {
       color: #7f8c8d;
       padding-left: 25px;
       font-weight: 400;
+      margin: 18px 0;
   }
   
   .post-add {

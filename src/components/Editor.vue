@@ -1,8 +1,10 @@
 <template>
   <div class="post-edit">
-    <div class="post-title"></div>
+    <div class="post-title">
+      <input v-model="postData.title" class="input-title" type="text">
+    </div>
     <!-- <markdown-editor v-model="content" ref="markdownEditor"></markdown-editor> -->
-    <markdown-editor :value="content" :configs="configs"></markdown-editor>
+    <markdown-editor v-on:input="postListInput" v-bind:value="postData.excerpt" v-bind:title="postData.title" :configs="configs"></markdown-editor>
   </div>
 </template>
 
@@ -11,13 +13,12 @@ import MarkdownEditor from './MarkdownEditor'
 
 export default {
   props: {
-    content: {
-      default: 'SimpleMDE'
-    }
+    postData: {}
   },
   data () {
     return {
-      // content: '``` \n var a=1; \n```',
+      title: '',
+      content: '',
       configs: {
         spellChecker: false, // 禁用拼写检查
         autoDownloadFontAwesome: false, // 阻止下载Font Awesome
@@ -31,6 +32,20 @@ export default {
   },
   components: {
     'markdown-editor': MarkdownEditor
+  },
+  methods: {
+    postListInput: function (data) {
+      this.postData.excerpt = data
+    }
+  },
+  watch: {
+    title: {
+      handler: function (val, oldval) {
+        console.log(val)
+        console.log(this.postData)
+      },
+      deep: true
+    }
   }
 }
 </script>
@@ -43,6 +58,22 @@ export default {
   .post-title {
     width: 100%;
     height: 70px;
-    background-color: #c4c4c4;
+    padding: 10px 0;
+    border-left: 1px solid #d9d9d9;
+    border-right: 1px solid #d9d9d9;
+    box-sizing: border-box;
+  }
+  .input-title {
+    width: 100%;
+    padding: 10px;
+    font-size: 30px;
+    font-weight: normal;
+    line-height: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-sizing: border-box;
+    border:none;
+    outline:medium;
   }
 </style>
