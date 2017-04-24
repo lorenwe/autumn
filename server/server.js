@@ -7,6 +7,9 @@ var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var mongoose =require('./config/mongoose.js')
+var db = mongoose();
+
 var app = express();
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
