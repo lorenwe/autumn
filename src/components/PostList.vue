@@ -1,6 +1,10 @@
 <template>
   <section class="post-list-column">
-    <h3 class="page-title"><i class="fa fa-home fa-fw iconfont"></i> 文章列表  <i class="fa fa-plus fa-fw iconfont post-add" v-on:click="test()"></i></h3>
+    <h3 class="page-title">
+      <i class="fa fa-home fa-fw iconfont"></i> 
+      文章列表  
+      <i class="fa fa-plus fa-fw iconfont post-add" v-on:click="test()"></i>
+    </h3>
     <ul class="post-list reset-list">
       <li v-for="(post, index) in postList" :class="[commonClass, index===focus ? activeClass : '']" v-on:click="postClickEvent(index)">
         <i class="fa fa-file-text fa-2x icon-note"></i>

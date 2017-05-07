@@ -6,17 +6,25 @@ import axios from 'axios'
 import App from './App'
 import VueProgressBar from 'vue-progressbar'
 
+// const options = {
+//   color: '#000000',
+//   failedColor: '#874b4b',
+//   thickness: '2px',
+//   transition: {
+//     speed: '0.5s',
+//     opacity: '0.5s',
+//     termination: 300
+//   },
+//   autoRevert: true,
+//   location: 'top',
+//   inverse: false
+// }
+
 const options = {
-  color: '#000000',
-  failedColor: '#874b4b',
-  thickness: '2px',
-  transition: {
-    speed: '0.5s',
-    opacity: '0.5s'
-  },
-  autoRevert: true,
-  location: 'top',
-  inverse: false
+  color: 'rgb(6, 200, 199)',
+  failedColor: 'red',
+  height: '2px',
+  thickness: '2px'
 }
 
 Vue.use(VueProgressBar, options)
