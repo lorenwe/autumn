@@ -73,14 +73,14 @@ export default {
       }, 300)
     },
     getPostList: function () {
-      var _this = this
-      this.$ajax.post('/postList.php').then(function (response) {
+      // var _this = this
+      this.$ajax.post('/postList.php').then(response => {
         var result = response.data
         if (result.State) {
-          _this.postList = result.Data
-          _this.$emit('postClick', _this.postList[0])
+          this.postList = result.Data
+          this.$emit('postClick', this.postList[0])
         }
-      }).catch(function (err) {
+      }).catch(err => {
         console.log(err)
       })
     }
