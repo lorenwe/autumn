@@ -1,23 +1,28 @@
 <template>
-  <div id="login" class="content">
-    <div class="login-box">
-      <span class="logo">
-        每个人都代表夜空里的一颗星星。
-      </span>
+  <div id="regist">
+    <div class="regist-box">
       <form>
         <div class="ipunt-wrap">
           <label for="email" class="icon-user"></label>
-          <input type="text" id="email1" placeholder="邮箱" v-model="email" name="email">
+          <input type="text" id="email" placeholder="邮箱" v-model="email">
+        </div>
+        <div class="ipunt-wrap">
+          <label for="phone" class="icon-phone"></label>
+          <input type="text" id="phone" placeholder="手机号" v-model="phone">
         </div>
         <div class="ipunt-wrap">
           <label for="password" class="icon-password"></label>
           <input type="password" id="password" placeholder="密码" v-model="password">
         </div>
+        <div class="ipunt-wrap">
+          <label for="confimpassword" class="icon-password"></label>
+          <input type="password" id="confimpassword" placeholder="确认密码" v-model="confimpassword">
+        </div>
         <div class="button">
-          <a class="gv" href="javascript:;" @click="login()">登录</a>
+          <a class="gv" href="javascript:;" @click="regist()">注册</a>
         </div>
         <div class="toregist">
-          还没有账号？<router-link to="/Regist"><span>去注册</span></router-link>
+          已有账号？<router-link to="/Login"><span>去登录</span></router-link>
         </div>
       </form>
     </div>
@@ -25,14 +30,15 @@
 </template>
 
 <script>
-// import dialog from '@/components/Dialog'
 import api from '../axios'
 export default {
-  name: 'login',
+  name: 'regist',
   data () {
     return {
       email: '',
+      phone: '',
       password: '',
+      confimpassword: '',
       dialog: false,
       dialogMsg: ''
     }
@@ -41,37 +47,50 @@ export default {
     confirm () {
       this.dialog = false
     },
-    login () {
-      if (!this.email || !this.password) {
+    regist () {
+      if (!this.email || !this.phone || !this.password || !this.confimpassword) {
         this.dialog = true
         this.dialogMsg = '请填写完整'
+        console.log('请填写完整')
+        return
+      }
+      if (this.password !== this.confimpassword) {
+        this.dialog = true
+        this.dialogMsg = '两次密码不相等'
+        console.log('两次密码不相等')
+        return
+      }
+      if (!(/^1[34578]\d{9}$/).test(this.phone)) {
+        this.dialog = true
+        this.dialogMsg = '您的手机号码输入有误，请重新输入'
+        console.log('手机号码输入')
         return
       }
       let szReg = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
       if (!szReg.test(this.email)) {
         this.dialog = true
-        this.dialogMsg = '邮箱不合法'
+        this.dialogMsg = '您的邮箱输入有误，请重新输入'
         console.log('邮箱不合法')
         return
       }
       var user = {
         email: this.email,
-        password: this.password
+        password: this.password,
+        phone: this.phone
       }
       var params = new URLSearchParams()
       for (var i in user) {
         params.append(i, user[i])
       }
-      api.UserLogin(params).then(response => {
+      api.UserRegister(params).then(response => {
         var result = response.data
         if (result.State) {
-          this.email = ''
+          this.username = ''
           this.password = ''
-          localStorage.setItem('token', result.Data.token)
           sessionStorage.id = result.Data.uid
           sessionStorage.email = result.Data.email
           sessionStorage.phone = result.Data.phone
-          this.$router.push('/Home')
+          this.$router.push('/Login')
         } else {
           this.dialog = true
           this.dialogMsg = response.Message
@@ -87,7 +106,7 @@ export default {
 </script>
 
 <style scoped>
-  #login {
+#regist {
   height: 100%;
   overflow: hidden;
   position: relative;
@@ -98,17 +117,17 @@ export default {
 }
 .gv {
   text-decoration: none;
-    background: url('../assets/nav_gv.png') repeat 0px 0px;
-    width: 130px;
-    height: 43px;
-    display: block;
-    text-align: center;
-    line-height: 43px;
-    cursor: pointer;
-    float: left;
-    margin: 10px 2px 10px 2px;
-    font: 18px/43px 'microsoft yahei';
-    color: #066197;
+  background: url('../assets/nav_gv.png') repeat 0px 0px;
+  width: 130px;
+  height: 43px;
+  display: block;
+  text-align: center;
+  line-height: 43px;
+  cursor: pointer;
+  float: left;
+  margin: 10px 2px 10px 2px;
+  font: 18px/43px 'microsoft yahei';
+  color: #066197;
 }
 a.gv:hover { 
   background: url('../assets/nav_gv.png') repeat 0px -43px; 
@@ -116,24 +135,14 @@ a.gv:hover {
   -webkit-box-shadow: 0 0 6px #1d7eb8;
   transition-duration: 0.5s;
 }
-.login-box {
-  width: 600px;
+.regist-box {
+  margin-left: auto;
+  margin-right: auto;
+  width: 253px;
   padding: 50px;
   margin: 40px auto;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  z-index: 100001;
-}
-.login-box .logo{
-  display: inline-block;
-  width: 370px;
-  height: 60px;
-  margin-bottom: 20px;
-  text-align: center;
-  font: 18px/43px 'microsoft yahei';
-  color: #066197;
+  z-index: 10001;
 }
 .ipunt-wrap label{
   display: inline-block;
@@ -145,6 +154,9 @@ a.gv:hover {
 }
 .icon-user{
   background: url('../assets/user.png') no-repeat;
+}
+.icon-phone{
+  background: url('../assets/phone.png') no-repeat;
 }
 .icon-password{
   background: url('../assets/password.png') no-repeat;
@@ -164,13 +176,14 @@ a.gv:hover {
 }
 .button {
   margin-top: 30px;
-  margin-left: 60px
+    margin-left: 60px
 }
 .toregist{
   font-size: 12px;
   float: right;
   padding-top: 20px;
   color: #fff;
+  z-index: 10001;
 }
 .toregist span{
   color: #066197;
