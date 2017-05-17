@@ -1,6 +1,10 @@
 <template>
   <section class="post-list-column">
-    <h3 class="page-title"><i class="fa fa-home fa-fw iconfont"></i> 文章列表  <i class="fa fa-plus fa-fw iconfont post-add" v-on:click="test()"></i></h3>
+    <h3 class="page-title">
+      <i class="fa fa-home fa-fw iconfont"></i> 
+      文章列表  
+      <i class="fa fa-plus fa-fw iconfont post-add" v-on:click="test()"></i>
+    </h3>
     <ul class="post-list reset-list">
       <li v-for="(post, index) in postList" :class="[commonClass, index===focus ? activeClass : '']" v-on:click="postClickEvent(index)">
         <i class="fa fa-file-text fa-2x icon-note"></i>
@@ -12,6 +16,7 @@
 </template>
 
 <script>
+import api from '../axios'
 export default {
   data () {
     return {
@@ -69,14 +74,13 @@ export default {
       }, 300)
     },
     getPostList: function () {
-      var _this = this
-      this.$ajax.post('/postList.php').then(function (response) {
+      api.GetPostList().then(response => {
         var result = response.data
         if (result.State) {
-          _this.postList = result.Data
-          _this.$emit('postClick', _this.postList[0])
+          this.postList = result.Data
+          this.$emit('postClick', this.postList[0])
         }
-      }).catch(function (err) {
+      }).catch(err => {
         console.log(err)
       })
     }
