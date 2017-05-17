@@ -35,6 +35,14 @@ module.exports = {
         '/postList.php': {
             target: 'http://127.0.0.1/vueapi',
             changeOrigin: true
+        },
+        '/login.php': {
+            target: 'http://127.0.0.1/vueapi',
+            changeOrigin: true
+        },
+        '/regist.php': {
+            target: 'http://127.0.0.1/vueapi',
+            changeOrigin: true
         }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
