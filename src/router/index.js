@@ -1,9 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/pages/Home'
-import Tag from '@/pages/Tag'
-import About from '@/pages/About'
-import Login from '@/pages/Login'
+import Admin from '@/pages/Admin'
+import Canvas from '@/pages/Canvas'
 
 Vue.use(Router)
 
@@ -11,25 +9,85 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'Home',
-      component: Home
+      redirect: '/Home'
     },
     {
-      path: '/tag',
-      name: 'Tag',
-      component: Tag
+      path: '/Canvas',
+      name: 'Canvas',
+      component: Canvas,
+      children: [
+        {
+          path: '/Login',
+          component: resolve => require(['@/pages/Login.vue'], resolve)
+        },
+        {
+          path: '/Regist',
+          component: resolve => require(['@/pages/Regist.vue'], resolve)
+        }
+      ],
+      meta: {
+        requireAuth: true
+      }
     },
     {
-      path: '/about',
-      name: 'About',
-      component: About
-    },
-    {
-      path: '/out',
-      name: 'Out',
-      component: Login
+      path: '/Admin',
+      name: 'Admin',
+      component: Admin,
+      children: [
+        {
+          path: '/Home',
+          component: resolve => require(['@/pages/Home.vue'], resolve),
+          meta: {
+            requireAuth: true
+          }
+        },
+        {
+          path: '/Admin/',
+          redirect: '/Home'
+        },
+        {
+          path: '/Tag',
+          component: resolve => require(['@/pages/Tag.vue'], resolve),
+          meta: {
+            requireAuth: true
+          }
+        },
+        {
+          path: '/About',
+          component: resolve => require(['@/pages/About.vue'], resolve),
+          meta: {
+            requireAuth: true
+          }
+        },
+        {
+          path: '/Out',
+          component: resolve => require(['@/pages/Out.vue'], resolve),
+          meta: {
+            requireAuth: true
+          }
+        }
+      ],
+      meta: {
+        requireAuth: true
+      }
     }
   ]
+})
+
+// 验证 token，存在才跳转
+router.beforeEach((to, from, next) => {
+  let token = localStorage.getItem('token')
+  if (to.meta.requireAuth) {
+    if (token) {
+      next()
+    } else {
+      next({
+        path: '/Login'
+      })
+    }
+  } else {
+    next()
+  }
 })
 
 export default router

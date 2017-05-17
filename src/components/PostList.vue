@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import api from '../axios'
 export default {
   data () {
     return {
@@ -73,8 +74,7 @@ export default {
       }, 300)
     },
     getPostList: function () {
-      // var _this = this
-      this.$ajax.post('/postList.php').then(response => {
+      api.GetPostList().then(response => {
         var result = response.data
         if (result.State) {
           this.postList = result.Data
