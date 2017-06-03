@@ -16,3 +16,4 @@ module.exports = function(){
   require('../models/article.model.js')
   return db;
 };
+
