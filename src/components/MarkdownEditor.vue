@@ -76,7 +76,7 @@ export default {
     bindingEvents () {
       this.simplemde.codemirror.on('change', () => {
         this.content = this.simplemde.value()
-        this.$emit('input', this.content)
+        this.$emit('input', {content: this.content, save: false})
         if (this.timer === 0) {
           this.timer = Date.parse(new Date()) / 1000
         } else {
@@ -182,7 +182,7 @@ export default {
       xhr.send(formData)
     },
     postContent (content) {
-      console.log(content)
+      this.$emit('input', {content: content, save: true})
     },
     onProgress (loaded, total) {
       this.loadOver = false

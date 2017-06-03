@@ -3,7 +3,7 @@
     <h3 class="page-title">
       <i class="fa fa-home fa-fw iconfont"></i> 
       文章列表  
-      <i class="fa fa-plus fa-fw iconfont post-add" v-on:click="test()"></i>
+      <i class="fa fa-plus fa-fw iconfont post-add" v-on:click="addPost()"></i>
     </h3>
     <ul class="post-list reset-list">
       <li v-for="(post, index) in postList" :class="[commonClass, index===focus ? activeClass : '']" v-on:click="postClickEvent(index)">
@@ -63,15 +63,21 @@ export default {
       this.focus = index
       this.$emit('postClick', this.postList[index])
     },
-    test: function () {
+    addPost: function () {
       this.$Progress.start()
-      setTimeout(() => {
-        if (Math.random() > 0.5) {
+      api.AddPost().then(response => {
+        var result = response.data
+        if (result.State) {
+          this.postList.unshift(result.Data)
+          this.$emit('postClick', this.postList[0])
           this.$Progress.finish()
         } else {
           this.$Progress.fail()
         }
-      }, 300)
+      }).catch(err => {
+        console.log(err)
+        this.$Progress.fail()
+      })
     },
     getPostList: function () {
       api.GetPostList().then(response => {

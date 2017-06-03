@@ -1,7 +1,7 @@
 <template>
   <div class="post-edit">
     <div class="post-title">
-      <input v-model="postData.title" class="input-title" type="text">
+      <input v-model="postData.title" v-on:keydown="saveInput" class="input-title" type="text">
     </div>
     <!-- <markdown-editor v-model="content" ref="markdownEditor"></markdown-editor> -->
     <markdown-editor v-on:input="postListInput" v-bind:value="postData.excerpt" v-bind:title="postData.title" :configs="configs"></markdown-editor>
@@ -10,7 +10,7 @@
 
 <script>
 import MarkdownEditor from './MarkdownEditor'
-
+import api from '../axios'
 export default {
   props: {
     postData: {}
@@ -19,6 +19,7 @@ export default {
     return {
       title: '',
       content: '',
+      timer: null,
       configs: {
         spellChecker: false, // 禁用拼写检查
         autoDownloadFontAwesome: false, // 阻止下载Font Awesome
@@ -33,9 +34,43 @@ export default {
   components: {
     'markdown-editor': MarkdownEditor
   },
+  mounted: function () {
+    this.timer = setInterval(() => {
+      this.savePost()
+    }, 30000)
+  },
   methods: {
     postListInput: function (data) {
-      this.postData.excerpt = data
+      this.postData.excerpt = data.content
+      if (data.save) {
+        // 保存修改
+        this.savePost()
+      }
+    },
+    savePost: function () {
+      var article = {
+        _id: this.postData._id,
+        title: this.postData.title,
+        excerpt: this.postData.excerpt
+      }
+      var params = new URLSearchParams()
+      for (var i in article) {
+        params.append(i, article[i])
+      }
+      api.SavePost(params).then(response => {
+        var result = response.data
+        if (result.State) {
+          console.log('ok')
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    saveInput: function (event) {
+      if (event.ctrlKey === true && event.keyCode === 83) {
+        event.preventDefault()
+        this.savePost()
+      }
     }
   },
   watch: {
@@ -46,6 +81,9 @@ export default {
       },
       deep: true
     }
+  },
+  beforeDestroy: function () {
+    clearInterval(this.timer)
   }
 }
 </script>
