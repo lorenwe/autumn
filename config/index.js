@@ -28,20 +28,8 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-        '/upload_image.php': {
-            target: 'http://127.0.0.1/vueapi',
-            changeOrigin: true
-        },
-        '/postList.php': {
-            target: 'http://127.0.0.1/vueapi',
-            changeOrigin: true
-        },
-        '/login.php': {
-            target: 'http://127.0.0.1/vueapi',
-            changeOrigin: true
-        },
-        '/regist.php': {
-            target: 'http://127.0.0.1/vueapi',
+        '/api': {
+            target: 'http://localhost:3000',
             changeOrigin: true
         }
     },
