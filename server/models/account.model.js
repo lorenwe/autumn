@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
 
 var  AccountSchema = new mongoose.Schema({
-  id: Number,
-  name: String,
-  createTime: Date,
-  lastLogin: Date
+  email: String,
+  phone: String,
+  password: String,
+  create_time: Date
 });
 
 mongoose.model('Account',AccountSchema);

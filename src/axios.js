@@ -37,18 +37,26 @@ instance.interceptors.response.use(response => {
 export default {
   // 用户注册
   UserRegister (data) {
-    return instance.post('/regist.php', data)
+    return instance.post('/api/account/regist', data)
   },
   // 用户登录
   UserLogin (data) {
-    return instance.post('/login.php', data)
+    return instance.post('/api/account/login', data)
   },
   // 获取文章列表
   GetPostList () {
-    return instance.post('/postList.php')
+    return instance.post('/api/article/list')
+  },
+  // 添加文章
+  AddPost () {
+    return instance.post('/api/article/add')
+  },
+  // 保存文章
+  SavePost (data) {
+    return instance.post('/api/article/save', data)
   },
   // 上传文章图片
   UploadImg (data) {
-    return instance.post('/upload_image.php', data)
+    return instance.post('/api/article/upload', data)
   }
 }

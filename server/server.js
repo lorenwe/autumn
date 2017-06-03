@@ -28,19 +28,37 @@ var accessLogStream = FileStreamRotator.getStream({
   frequency: 'daily',
   verbose: false
 });
-
 app.use(morgan('combined', {stream: accessLogStream}));
 
 //路由组
 var index = require('./routes/index.js');
-var users = require('./routes/users.js');
+var account = require('./routes/account.js');
+var article = require('./routes/article.js');
 //注册路由
 app.use('/', index);
-app.use('/users', users);
+app.use('/api/account', account);
+app.use('/api/article', article);
 
 app.use(function(req, res, next) {
-  res.send('404');
+  res.status(404);
+  try {
+    return res.send('Not Found');
+  } catch (e) {
+    console.log('404 not found');
+  }
+});
+
+app.use(function(err, req, res, next) {
+  if(err) { return next(); }
+  res.status(500);
+  try {
+    return res.send(err.message || 'server error');
+  } catch (e) {
+    console.log('500 server error');
+  }
 });
 
 var port = process.env.PORT || '3000';
 app.listen(port);
+
+
