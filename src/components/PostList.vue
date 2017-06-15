@@ -5,26 +5,38 @@
       文章列表  
       <i class="fa fa-plus fa-fw iconfont post-add" v-on:click="addPost()"></i>
     </h3>
-    <ul class="post-list reset-list">
-      <li v-for="(post, index) in postList" :class="[commonClass, index===focus ? activeClass : '']" v-on:click="postClickEvent(index)">
-        <i class="fa fa-file-text fa-2x icon-note"></i>
-        <p class="abbreviate">{{post['excerpt']}}</p>
-        <a href="javascript:void(0)" data-type="edit" class="note-link title">{{post['title']}}</a>
-      </li>
-    </ul>
+    <draggable class="post-list reset-list" @update="onUpdate" element="ul" v-model="postList" :options="dragOptions" @start="onStart">
+      <transition-group type="transition" :name="'flip-list'">
+        <li 
+        v-for="(post, index) in postList" 
+        v-on:click="postClickEvent(index)" 
+        :class="[commonClass, focus===index ? activeClass : '']" 
+        :key="index">
+          <i class="fa fa-file-text fa-2x icon-note"></i>
+          <p class="abbreviate">{{post['excerpt']}}</p>
+          <a href="javascript:void(0)" data-type="edit" class="note-link title">{{post['title']}}</a>
+        </li>
+      </transition-group>
+    </draggable>
   </section>
 </template>
 
 <script>
 import api from '../axios'
+import draggable from 'vuedraggable'
 export default {
   data () {
     return {
       commonClass: 'post-list-item',
       focus: 0,
+      editable: true,
       activeClass: 'active',
-      postList: []
+      postList: [],
+      oldList: []
     }
+  },
+  components: {
+    draggable
   },
   beforeCreate: function () {
 
@@ -59,6 +71,61 @@ export default {
   },
   // 组件已经销毁
   methods: {
+    onStart: function (event) {
+      this.oldList = this.postList
+    },
+    onUpdate: function (event) {
+      var oldIndex = event.oldIndex
+      var newIndex = event.newIndex
+      var sortlist = []
+      var curId = this.oldList[this.focus]._id
+      var oldList = this.oldList
+      for (var i in oldList) {
+        sortlist[i] = oldList[i].sort
+      }
+      // 需要更新的记录
+      var updateArr = []
+      var obj = {}
+      if (parseInt(oldIndex) > parseInt(newIndex)) {
+        // 从下往上拖
+        for (var j = newIndex; j <= oldIndex; j++) {
+          obj = {}
+          obj._id = oldList[j]._id
+          obj.sort = oldList[j].sort
+          updateArr[j] = obj
+        }
+        for (var item in updateArr) {
+          if (parseInt(item) === parseInt(oldIndex)) {
+            updateArr[item].sort = oldList[newIndex].sort
+          } else {
+            updateArr[item].sort = oldList[item].sort - 1
+          }
+        }
+      } else {
+        // 从上往下拖
+        for (var k = oldIndex; k <= newIndex; k++) {
+          obj = {}
+          obj._id = oldList[k]._id
+          obj.sort = oldList[k].sort
+          updateArr[k] = obj
+        }
+        for (var y in updateArr) {
+          if (parseInt(y) === parseInt(oldIndex)) {
+            updateArr[y].sort = oldList[newIndex].sort
+          } else {
+            updateArr[y].sort = oldList[y].sort + 1
+          }
+        }
+      }
+      console.log(updateArr)
+      this.saveSort(updateArr)
+      for (var v in this.postList) {
+        if (curId === this.postList[v]._id) {
+          this.focus = parseInt(v)
+        }
+        this.postList[v].sort = sortlist[v]
+      }
+    },
     postClickEvent: function (index) {
       this.focus = index
       this.$emit('postClick', this.postList[index])
@@ -89,6 +156,32 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    saveSort: function (data) {
+      var params = []
+      for (var item in data) {
+        if (data[item] !== null) {
+          params.push(data[item])
+        }
+      }
+      api.SaveSort(params).then(response => {
+        var result = response.data
+        if (result.State) {
+          console.log('保存成功')
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    }
+  },
+  computed: {
+    dragOptions () {
+      return {
+        animation: 0,
+        group: 'description',
+        disabled: !this.editable,
+        ghostClass: 'ghost'
+      }
     }
   }
 }
@@ -131,7 +224,7 @@ export default {
       background-color: transparent;
       border-left: 5px solid transparent !important;
   }
-  .post-list-item:hover {
+  /*.post-list-item:hover {
       color: #555555;
       position: relative;
       max-height: 90px;
@@ -139,13 +232,13 @@ export default {
       border-top: 1px solid #dcdcdc;
       background-color: #ececec;
       border-left: 5px solid #ec7259 !important;
-  }
-  .post-list>.active{
+  }*/
+  .post-list .active{
       background-color: #ececec;
       color: #555555;
       border-left: 5px solid #ec7259 !important;
   }
-  .post-list>.active:hover {
+  .post-list .active:hover {
       background-color: #ececdd;
       color: #555555;
       border-left: 5px solid #ec7259 !important;
@@ -194,4 +287,22 @@ export default {
       font-weight: normal;
       line-height: 36px;
   }
+  .flip-list-move {
+      transition: transform 0.9s;
+  }
+
+  .no-move {
+      transition: transform 0.5s;
+  }
+  .ghost {
+      opacity: .7;
+      background: #C8EBFB;
+  }
+  /*.list-group-item {
+      cursor: move;
+  }
+
+  .list-group-item i{
+      cursor: pointer;
+  }*/
 </style>

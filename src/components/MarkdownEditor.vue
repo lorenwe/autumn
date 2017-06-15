@@ -194,6 +194,7 @@ export default {
   },
   watch: {
     value (val) {
+      this.$emit('input', {content: this.content, save: false})
       if (val === this.simplemde.value()) return
       this.simplemde.value(val)
     }
