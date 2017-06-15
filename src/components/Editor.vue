@@ -4,11 +4,12 @@
       <input v-model="postData.title" v-on:keydown="saveInput" class="input-title" type="text">
     </div>
     <!-- <markdown-editor v-model="content" ref="markdownEditor"></markdown-editor> -->
-    <markdown-editor v-on:input="postListInput" v-bind:value="postData.excerpt" v-bind:title="postData.title" :configs="configs"></markdown-editor>
+    <markdown-editor v-on:input="postListInput" v-bind:value="postData.excerpt" v-bind:title="postData.title" :configs="configs" ></markdown-editor>
   </div>
 </template>
 
 <script>
+// import 'simplemde-theme-base/dist/simplemde-theme-base.min.css'
 import MarkdownEditor from './MarkdownEditor'
 import api from '../axios'
 export default {
@@ -20,13 +21,14 @@ export default {
       title: '',
       content: '',
       timer: null,
+      isUpdate: false,
       configs: {
         spellChecker: false, // 禁用拼写检查
         autoDownloadFontAwesome: false, // 阻止下载Font Awesome
         promptURLs: true,
         renderingConfig: {
           codeSyntaxHighlighting: true, // 开启代码高亮
-          highlightingTheme: 'dark' // 自定义代码高亮主题，可选列表(https://github.com/isagalaev/highlight.js/tree/master/src/styles)
+          highlightingTheme: 'monokai' // 自定义代码高亮主题，可选列表(https://github.com/isagalaev/highlight.js/tree/master/src/styles)
         }
       }
     }
@@ -36,8 +38,10 @@ export default {
   },
   mounted: function () {
     this.timer = setInterval(() => {
-      this.savePost()
-    }, 30000)
+      if (this.isUpdate) {
+        this.savePost()
+      }
+    }, 60000)
   },
   methods: {
     postListInput: function (data) {
@@ -45,6 +49,8 @@ export default {
       if (data.save) {
         // 保存修改
         this.savePost()
+      } else {
+        this.isUpdate = true
       }
     },
     savePost: function () {
@@ -60,6 +66,7 @@ export default {
       api.SavePost(params).then(response => {
         var result = response.data
         if (result.State) {
+          this.isUpdate = false
           console.log('ok')
         }
       }).catch(err => {

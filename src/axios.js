@@ -55,6 +55,10 @@ export default {
   SavePost (data) {
     return instance.post('/api/article/save', data)
   },
+  // 保存文章排序
+  SaveSort (data) {
+    return instance.post('/api/article/save_sort', data)
+  },
   // 上传文章图片
   UploadImg (data) {
     return instance.post('/api/article/upload', data)
