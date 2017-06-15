@@ -6,11 +6,18 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var hbs = require('hbs');
+var exphbs  = require('express-handlebars');
 
 var mongoose =require('./config/mongoose.js')
 var db = mongoose();
 
 var app = express();
+
+// view
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'html');
+app.engine('html', hbs.__express);
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(bodyParser.json());
@@ -32,12 +39,15 @@ app.use(morgan('combined', {stream: accessLogStream}));
 
 //路由组
 var index = require('./routes/index.js');
-var account = require('./routes/account.js');
-var article = require('./routes/article.js');
+var account = require('./routes/admin/account.js');
+var article = require('./routes/admin/article.js');
+var clientArticle = require('./routes/client/article.js');
 //注册路由
 app.use('/', index);
 app.use('/api/account', account);
 app.use('/api/article', article);
+
+app.use('/article', clientArticle);
 
 app.use(function(req, res, next) {
   res.status(404);

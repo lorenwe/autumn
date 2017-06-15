@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-next muse use-motion">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+    <link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="/stylesheets/googlecss.css" rel="stylesheet" type="text/css"/>
+    <link href="/stylesheets/main.css" rel="stylesheet" type="text/css"/>
+    <link href="/stylesheets/styles/monokai-sublime.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="/javascripts/highlight.pack.js"></script>
+    <script type="text/javascript" src="/javascripts/pangu.js"></script>
+    <script type="text/javascript">
+        hljs.initHighlightingOnLoad();
+        window.onload = function () {
+            pangu.spacingPage();
+        }
+    </script>
+</head>
+<body>
+	<div class="container page-home">
+		<div class="headband" style="width: 100%;"></div> <!-- 加载进度条 -->
+		<header class="header" id="header">
+            <div class="header-inner">
+                <div class="site-meta ">
+                    <div>
+                        <a class="brand" style="opacity: 1;" href="/" rel="start">
+                            <span class="logo-line-before"><i></i></span>
+                            <span class="site-title" style="opacity: 1; top: 0px;">
+                            	扶我起来，我还有个Bug没改完（0.0）
+                            </span>
+                            <span class="logo-line-after"><i></i></span>
+                        </a>
+                    </div>
+                    <p class="site-subtitle" style="opacity: 1; top: 0px;">
+                    	Moe Stuido・願いの叶う場所
+                    </p>
+                </div>
+                <div class="site-nav-toggle">
+                    <button>
+                        <span class="btn-bar"></span>
+                        <span class="btn-bar"></span>
+                        <span class="btn-bar"></span>
+                    </button>
+                </div>
+                <nav class="site-nav">
+                    <ul class="menu" id="menu">
+                        <li class="menu-item menu-item-home">
+                            <a href="/" rel="section">Home</a>
+                        </li>
+                        <li class="menu-item menu-item-archives">
+                            <a href="/archives" rel="section">Archives</a>
+                        </li>
+                        <li class="menu-item menu-item-categories">
+                            <a href="/categories" rel="section">Categories</a>
+                        </li>
+                        <li class="menu-item menu-item-tags">
+                            <a href="/tags" rel="section">Tags</a>
+                        </li>
+                        <li class="menu-item menu-item-about">
+                            <a href="/about" rel="section">About</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        <main class="main" id="main">
+            <div class="main-inner">
+                <div class="content-wrap">
+                    <div class="content" id="content">
+                        <section class="posts-expand" id="posts">
+                            {{{body}}}
+                        </section>
+                        <!-- 翻页 -->
+                        <nav class="pagination">
+                            <span class="page-number current">1</span>
+                            <a class="page-number" href="/page/2/">2</a>
+                            <span class="space">…</span>
+                            <a class="page-number" href="/page/5/">5</a>
+                            <a class="extend next" href="/page/2/" rel="next">
+                            	<i class="fa fa-angle-right"></i>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer id="footer" class="footer">
+		    <div class="footer-inner">
+		        <div class="copyright">© 
+					<span itemprop="copyrightYear">2017</span>
+		  			<span class="with-love"><i class="fa fa-heart"></i></span>
+		  			<span class="author" itemprop="copyrightHolder">Kaede Akatsuki</span>
+				</div>
+			</div>
+    	</footer>
+	</div>
+</body>
+</html>
